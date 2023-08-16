@@ -26,7 +26,7 @@ export async function POST(request) {
           role: "user",
           content: `generate a blog on the topic ${topic} with the following attributes : 
           - title
-          - description
+          - description (this should be greater than 100 words)
           Format the response properly in the following JSON object : ${JSON.stringify(
             structure
           )}
@@ -46,27 +46,26 @@ export async function POST(request) {
       response = JSON.parse(completion.data.choices[0].message.content);
       structure.title = response.title;
       structure.desc = response.desc;
+      try {
+        const postRes = await fetch("http://localhost:3000/api/postBlogs", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(structure),
+        });
+
+        const successMsg = await postRes.json();
+        return NextResponse.json({ structure, successMsg });
+      } catch (error) {
+        console.log(error);
+      }
     } catch (parseError) {
       console.error("Error parsing JSON:", parseError);
       console.log(
         "Response Content:",
         completion.data.choices[0].message.content
       );
-    }
-
-    try {
-      const postRes = await fetch("http://localhost:3000/api/postBlogs", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify(structure),
-      });
-
-      const successMsg = await postRes.json();
-      return NextResponse.json({ structure, successMsg });
-    } catch (error) {
-      console.log(error);
     }
   } catch (error) {
     console.error("Error generating blog content:", error);
