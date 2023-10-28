@@ -4,9 +4,13 @@ import { useEffect, useState } from "react";
 import { AiFillDelete } from "react-icons/ai";
 import { MdOutlineModeEdit } from "react-icons/md";
 import toast, { Toaster } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { setBlogs } from "@/redux/slices/BlogSlice";
 
 const Home = () => {
-  const [blogs, setBlogs] = useState([]);
+  const dispatch = useDispatch();
+  const blogs = useSelector((state) => state.blog.blogs);
+
   const [editContent, setEditContent] = useState(false);
   const [selectedPost, setSelectedPost] = useState("");
   const [updatedTitle, setUpdatedTitle] = useState("");
@@ -19,7 +23,7 @@ const Home = () => {
   const getblogs = async () => {
     const response = await fetch("/api/getBlogs");
     const data = await response.json();
-    setBlogs(data.data);
+    dispatch(setBlogs(data.data));
   };
 
   const deleteBlog = async (id) => {
