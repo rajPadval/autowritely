@@ -14,16 +14,16 @@ const Home = () => {
 
   useEffect(() => {
     getblogs();
-  }, [blogs]);
+  }, []);
 
   const getblogs = async () => {
-    const response = await fetch("http://localhost:3000/api/getBlogs");
+    const response = await fetch("/api/getBlogs");
     const data = await response.json();
     setBlogs(data.data);
   };
 
   const deleteBlog = async (id) => {
-    const response = await fetch(`http://localhost:5000/delete-blog/${id}`, {
+    const response = await fetch(`/api/deleteBlog/${id}`, {
       method: "DELETE",
     });
     if (response.status === 200) {
@@ -34,9 +34,8 @@ const Home = () => {
   };
 
   const updateBlog = async (id) => {
-    console.log(updatedDesc, updatedTitle);
     try {
-      const response = await fetch(`http://localhost:5000/update-blog/${id}`, {
+      const response = await fetch(`/api/updateBlog/${id}`, {
         method: "PUT",
         headers: {
           "content-type": "application/json",
