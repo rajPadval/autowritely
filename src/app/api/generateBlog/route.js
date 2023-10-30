@@ -83,7 +83,10 @@ export async function POST(request) {
       });
     }, 1 * 60 * 1000); // Run every 5 minutes
 
-    return NextResponse.json({ message: "Blog generation scheduled" });
+    return NextResponse.json({
+      success: true,
+      message: "Blog generation scheduled",
+    });
   } catch (error) {
     console.error("Error scheduling blog generation:", error);
     return NextResponse.json({ error: "Internal server error" });
