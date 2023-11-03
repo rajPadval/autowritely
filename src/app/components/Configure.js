@@ -27,7 +27,7 @@ const Configure = () => {
       });
       const data = await res.data;
       console.log(data.message);
-      toast.success(data.message);
+      alert(data.message);
       router.push("/admin");
     } catch (error) {
       toast.error(error.message);

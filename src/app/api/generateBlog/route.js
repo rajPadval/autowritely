@@ -81,7 +81,7 @@ export async function POST(request) {
       topics.forEach((topic) => {
         generateAndPostBlogForTopic(topic);
       });
-    }, 1 * 60 * 1000); // Run every 5 minutes
+    }, 1 * 60 * 1000); // Run every 1 minute
 
     return NextResponse.json({
       success: true,

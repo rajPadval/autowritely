@@ -5,6 +5,7 @@ import { BiSolidLockAlt } from "react-icons/bi";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import LoadingBar from "react-top-loading-bar";
+import toast, { Toaster } from "react-hot-toast";
 
 const Signin = () => {
   const router = useRouter();
@@ -13,18 +14,21 @@ const Signin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const login = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent form from reloading the page
     setLoading(true); // Show loading bar
     loadingBar.current.continuousStart(); // Start the loading bar animation
     try {
       const res = await axios.post("/api/signin", { email, password });
       const data = await res.data;
-      console.log(data.message);
+      if (data.success == false) {
+        toast.error(data.message);
+      } else toast.success(data.message);
       router.push("/admin");
     } catch (error) {
-      console.error("Login failed:", error);
+      toast.error("Login failed:", error);
     } finally {
       setLoading(false); // Hide loading bar
       loadingBar.current.complete(); // Complete the loading bar animation
@@ -33,6 +37,7 @@ const Signin = () => {
 
   return (
     <div className=" flex justify-center items-center h-[100vh]">
+      <Toaster position="top-center" reverseOrder={false} />
       <LoadingBar color="#60DF86" ref={loadingBar} height="5px" />
       <div className="flex-col flex ml-auto mr-auto items-center w-full lg:w-2/3 md:w-3/5">
         <h1 className="font-bold text-2xl my-10 text-black"> Login </h1>
@@ -57,12 +62,18 @@ const Signin = () => {
           </div>
           <div className="flex flex-wrap  w-full relative h-15 bg-gray-300 items-center mb-4 rounded-lg">
             <div className="flex -mr-px justify-center w-15 p-4">
-              <span className="flex items-center leading-normal bg-gray-300 rounded rounded-r-none text-xl px-3 whitespace-no-wrap text-gray-600">
-                <BiSolidLockAlt />
+              <span className="flex items-center leading-normal bg-gray-300 rounded rounded-r-none text-xl px-3 whitespace-no-wrap ">
+                <BiSolidLockAlt
+                title="Show Password"
+                  className={`cursor-pointer  ${
+                    showPassword ? "text-green-500" : "text-gray-600"
+                  }`}
+                  onClick={() => setShowPassword(!showPassword)}
+                />
               </span>
             </div>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               className="flex-shrink flex-grow  leading-normal w-px flex-1 border-0 h-10 px-3 relative self-center font-roboto text-xl outline-none bg-gray-300"
               placeholder="Password"
               value={password}
